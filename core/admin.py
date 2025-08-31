@@ -65,7 +65,7 @@ class JobAdmin(admin.ModelAdmin):
 
 @admin.register(JobApplication)
 class JobApplicationAdmin(admin.ModelAdmin):
-    list_display = ("id", "job", "applicant", "status", "created_at")
-    list_filter = ("status", "created_at")
+    list_display = ("id", "job", "applicant", "status", "applied_at")
+    list_filter = ("status", "applied_at")
     search_fields = ("job__title", "applicant__username", "cover_letter")
     autocomplete_fields = ("job", "applicant")
