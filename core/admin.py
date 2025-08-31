@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import User, JobSeekerProfile, EmployerProfile, Job
+from .models import User, JobSeekerProfile, EmployerProfile, Job, JobApplication
 
 
 class JobSeekerProfileInline(admin.StackedInline):
@@ -61,4 +61,11 @@ class JobAdmin(admin.ModelAdmin):
                 updated += 1
         self.message_user(request, f"{updated} job(s) published.")
     publish_jobs.short_description = "Publish selected jobs"
-    
+
+
+@admin.register(JobApplication)
+class JobApplicationAdmin(admin.ModelAdmin):
+    list_display = ("id", "job", "applicant", "status", "created_at")
+    list_filter = ("status", "created_at")
+    search_fields = ("job__title", "applicant__username", "cover_letter")
+    autocomplete_fields = ("job", "applicant")
