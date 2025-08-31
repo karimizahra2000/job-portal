@@ -41,4 +41,5 @@ inflection==0.5.1
 uritemplate==4.2.0
 pyyaml==6.0.2
 pytz==2025.2
+Pillow==11.3.0
 

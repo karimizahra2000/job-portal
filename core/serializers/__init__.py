@@ -1,1 +1,2 @@
 from .users import RegisterSerializer, PasswordResetConfirmSerializer, PasswordResetRequestSerializer
+from .profiles import EmployerProfileSerializer, JobSeekerProfileSerializer
