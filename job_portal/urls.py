@@ -23,4 +23,5 @@ urlpatterns = [
     path('api/profiles/', include('core.urls.profiles')),
     path('api/jobs/', include('core.urls.jobs')),
     path('api/applications/', include('core.urls.applications')),
+    path('api/swagger/', include('core.urls.swagger')),
 ]
