@@ -2,10 +2,10 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from core.models import Job
 from core.serializers import JobSerializer
 from core.permissions import IsEmployer, IsOwnerOrAdmin
 from core.utils.pagination import CachedPagination
+from core.repositories.jobs import JobRepository
 
 
 class JobViewSet(viewsets.ModelViewSet):
@@ -15,29 +15,26 @@ class JobViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        status_filter = self.request.query_params.get("status")  # فیلتر وضعیت آگهی‌ها
-
-        if user.is_staff:
-            qs = Job.objects.all()
-        elif user.is_employer:
-            qs = Job.objects.filter(employer=user)
-        else:  # job seeker
-            qs = Job.objects.filter(status='approved', is_published=True)
-
-        if status_filter:
-            qs = qs.filter(status=status_filter)
-        return qs.order_by("-created_at")
+        status_filter = self.request.query_params.get("status")
+        return JobRepository.get_all(user, status_filter)
 
     def perform_create(self, serializer):
-        serializer.save(employer=self.request.user, status='pending')
+        JobRepository.create(employer=self.request.user, **serializer.validated_data)
+
+    def perform_update(self, serializer):
+        job = self.get_object()
+        JobRepository.update(job, **serializer.validated_data)
+
+    def perform_destroy(self, instance):
+        JobRepository.delete(instance)
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
     def approve(self, request, pk=None):
         job = self.get_object()
         if not request.user.is_staff:
             return Response({"detail": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
-        job.status = 'approved'
-        job.save()
+
+        JobRepository.approve(job)
         return Response({"status": "approved"})
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
@@ -45,10 +42,9 @@ class JobViewSet(viewsets.ModelViewSet):
         job = self.get_object()
         if not request.user.is_staff:
             return Response({"detail": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
+
         reason = request.data.get("reason", "")
-        job.status = 'rejected'
-        job.rejection_reason = reason
-        job.save()
+        JobRepository.reject(job, reason)
         return Response({"status": "rejected", "reason": reason})
 
     @action(detail=True, methods=['post'], permission_classes=[IsAuthenticated])
@@ -56,8 +52,10 @@ class JobViewSet(viewsets.ModelViewSet):
         job = self.get_object()
         if not request.user.is_staff:
             return Response({"detail": "Not allowed"}, status=status.HTTP_403_FORBIDDEN)
-        if job.status != 'approved':
-            return Response({"detail": "Job must be approved first"}, status=status.HTTP_400_BAD_REQUEST)
-        job.is_published = True
-        job.save()
+
+        try:
+            JobRepository.publish(job)
+        except ValueError as e:
+            return Response({"detail": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
         return Response({"status": "published"})

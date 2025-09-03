@@ -12,7 +12,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY
 SECRET_KEY = env("SECRET_KEY")
 DEBUG = True
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 # Application definition
 INSTALLED_APPS = [
@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    "daphne",
     'django.contrib.staticfiles',
 
     'core.apps.CoreConfig',
@@ -67,7 +68,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'job_portal.wsgi.application'
-
+ASGI_APPLICATION = "job_portal.asgi.application"
 # Database
 AUTH_USER_MODEL = 'core.User'
 DATABASES = {

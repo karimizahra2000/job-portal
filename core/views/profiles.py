@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions
-from core.models import JobSeekerProfile, EmployerProfile
+from rest_framework.exceptions import NotFound
 from core.serializers import JobSeekerProfileSerializer, EmployerProfileSerializer
+from core.repositories.profiles import JobSeekerProfileRepository, EmployerProfileRepository
 
 
 class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
@@ -8,7 +9,10 @@ class JobSeekerProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return JobSeekerProfile.objects.get(user=self.request.user)
+        profile = JobSeekerProfileRepository.get_by_user(self.request.user)
+        if not profile:
+            raise NotFound("Job seeker profile not found.")
+        return profile
 
 
 class EmployerProfileView(generics.RetrieveUpdateAPIView):
@@ -16,4 +20,7 @@ class EmployerProfileView(generics.RetrieveUpdateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_object(self):
-        return EmployerProfile.objects.get(user=self.request.user)
+        profile = EmployerProfileRepository.get_by_user(self.request.user)
+        if not profile:
+            raise NotFound("Employer profile not found.")
+        return profile
