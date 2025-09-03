@@ -157,3 +157,8 @@ SOCIALACCOUNT_PROVIDERS = {
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
+ELASTICSEARCH_DSL = {
+    'default': {
+        'hosts': 'http://elasticsearch:9200'
+    },
+}

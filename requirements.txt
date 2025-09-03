@@ -20,10 +20,14 @@ daphne==4.2.1
 dj-rest-auth==7.0.1
 Django==5.2.5
 django-allauth==65.11.0
+django-elasticsearch-dsl==9.0
 django-environ==0.12.0
 djangorestframework==3.16.1
 djangorestframework_simplejwt==5.5.1
 drf-yasg==1.21.10
+elastic-transport==9.1.0
+elasticsearch==9.1.0
+elasticsearch-dsl==0.0.9
 hyperlink==21.0.0
 idna==3.10
 incremental==24.7.2
