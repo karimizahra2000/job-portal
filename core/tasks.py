@@ -26,3 +26,14 @@ def send_password_reset_email(user_email, reset_link):
     recipient_list = [user_email]
 
     send_mail(subject, message, from_email, recipient_list, fail_silently=False)
+
+
+@shared_task
+def send_notification_email(subject, message, recipient_list):
+    send_mail(
+        subject=subject,
+        message=message,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=recipient_list,
+        fail_silently=False,
+    )
