@@ -18,7 +18,6 @@ class RegisterView(APIView):
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
-
             user = UserRepository.create_user(**serializer.validated_data)
 
             token = UserRepository.generate_access_token(user)
@@ -42,10 +41,8 @@ class VerifyEmailView(APIView):
             access_token = AccessToken(token)
             user_id = access_token["user_id"]
 
-
             user = UserRepository.get_user_by_id(user_id)
             UserRepository.activate_and_verify_user(user)
-
 
             if user.is_seeker:
                 from core.models import JobSeekerProfile
@@ -90,7 +87,7 @@ class PasswordResetRequestView(APIView):
         try:
             user = UserRepository.get_user_by_email(email)
             token = str(UserRepository.generate_access_token(user))
-            reset_link = f"http://localhost:8000/api/users/password-reset/confirm/?token={token}"
+            reset_link = f"http://localhost/api/users/password-reset/confirm/?token={token}"
 
             send_password_reset_email.delay(user.email, reset_link)
 

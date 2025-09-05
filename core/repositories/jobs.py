@@ -6,9 +6,7 @@ from django.db.models import QuerySet
 class JobRepository:
     @staticmethod
     def get_all(user, status_filter: str | None = None) -> QuerySet:
-        """
-        بر اساس نوع کاربر queryset برمی‌گرداند
-        """
+
         if user.is_staff:
             qs = Job.objects.all()
         elif getattr(user, "is_employer", False):
@@ -27,9 +25,7 @@ class JobRepository:
 
     @staticmethod
     def create(employer, **kwargs) -> Job:
-        """
-        هنگام ایجاد Job، وضعیت پیش‌فرض 'pending' قرار می‌گیرد
-        """
+
         return Job.objects.create(employer=employer, status='pending', **kwargs)
 
     @staticmethod

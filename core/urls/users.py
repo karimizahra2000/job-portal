@@ -10,7 +10,7 @@ urlpatterns = [
     path("logout/", LogoutView.as_view(), name="logout"),
     path("password-reset/", PasswordResetRequestView.as_view(), name="password-reset"),
     path("password-reset/confirm/", PasswordResetConfirmView.as_view(), name="password-reset-confirm"),
-    path('auth/', include('dj_rest_auth.urls')),  # login/logout/password reset
+    path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
     path('auth/social/', include('allauth.socialaccount.urls')),
 ]

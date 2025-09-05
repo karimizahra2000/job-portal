@@ -6,9 +6,9 @@ services:
     container_name: jobportal-db
     restart: always
     environment:
-      POSTGRES_DB: jobportal
-      POSTGRES_USER: jobuser
-      POSTGRES_PASSWORD: jobpass
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -23,7 +23,7 @@ services:
     environment:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
-      - xpack.security.enabled=false 
+      - xpack.security.enabled=false
     ports:
       - "9200:9200"
     volumes:
@@ -34,7 +34,7 @@ services:
     image: docker.elastic.co/kibana/kibana:8.14.1
     container_name: jobportal-kibana
     environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_HOSTS=${ELASTICSEARCH_HOST}
     ports:
       - "5601:5601"
     depends_on:
@@ -56,14 +56,14 @@ services:
       - redis
       - elasticsearch
     environment:
-      POSTGRES_DB: jobportal
-      POSTGRES_USER: jobuser
-      POSTGRES_PASSWORD: jobpass
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/0
-      ELASTICSEARCH_DSL_HOSTS: http://elasticsearch:9200
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+      ELASTICSEARCH_DSL_HOSTS: ${ELASTICSEARCH_HOST}
 
   celery:
     build:
@@ -78,14 +78,15 @@ services:
       - redis
       - elasticsearch
     environment:
-      POSTGRES_DB: jobportal
-      POSTGRES_USER: jobuser
-      POSTGRES_PASSWORD: jobpass
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      CELERY_BROKER_URL: redis://redis:6379/0
-      CELERY_RESULT_BACKEND: redis://redis:6379/0
-      ELASTICSEARCH_DSL_HOSTS: http://elasticsearch:9200
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_HOST: ${POSTGRES_HOST}
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      CELERY_BROKER_URL: ${CELERY_BROKER_URL}
+      CELERY_RESULT_BACKEND: ${CELERY_RESULT_BACKEND}
+      ELASTICSEARCH_DSL_HOSTS: ${ELASTICSEARCH_HOST}
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
 
   nginx:
     image: nginx:stable

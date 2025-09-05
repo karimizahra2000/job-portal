@@ -7,7 +7,7 @@ class CachedPagination(PageNumberPagination):
     page_size = 10
     page_size_query_param = "page_size"
     max_page_size = 50
-    cache_timeout = 60  # cache duration in seconds
+    cache_timeout = 60
 
     def _build_cache_key(self, request, view):
         page = request.query_params.get(self.page_query_param, 1)
